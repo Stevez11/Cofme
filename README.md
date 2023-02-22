@@ -1,0 +1,1 @@
+# mining_income_statistics
