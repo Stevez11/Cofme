@@ -39,7 +39,7 @@ def get_data(today=str(datetime.datetime.now().date()),
     df['day'] = pd.DatetimeIndex(df['Date']).day
 
     df = df[
-        (df.Date > '2022-12-31') & (df.month == json_obj['month']) & (df.day > json_obj['day']) & (df.Date != today)]
+        (df.Date > '2022-12-31') & (df.month >= json_obj['month']) & (df.day > json_obj['day']) & (df.Date != today)]
     df['KAS reward'] = round(df['Hashrate(MHs)'].astype(float) / max_hash_rate * kas_rewards, 2)
     df['consumption'] = round(df['Hashrate(MHs)'].astype(float) / max_hash_rate * consumption, 2)
     print(df)
