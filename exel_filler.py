@@ -8,7 +8,7 @@ import archivator
 def update_data(df: pd.DataFrame) -> None:
     archivator.screen()
 
-    book = openpyxl.load_workbook("m2023.xlsx")
+    book = openpyxl.load_workbook("../../private/m2023.xlsx")
 
     uniq_months = list(map(int, df['month'].unique()))
     if len([i for i in uniq_months if i > len(book.sheetnames)]) != 0:
@@ -28,13 +28,13 @@ def update_data(df: pd.DataFrame) -> None:
                 sheet[f"E{day + 1}"].value = kas
                 sheet[f"J{day + 1}"].value = cons * 1000
 
-    book.save("m2023.xlsx")
+    book.save("../../private/m2023.xlsx")
 
-    with open('last_update.json') as f:
+    with open('../../private/last_update.json') as f:
         json_obj = json.load(f)
     json_obj['day'] = datetime.datetime.now().date().day - 1
     json_obj['month'] = datetime.datetime.now().date().month
-    with open('last_update.json', 'w') as f:
+    with open('../../private/last_update.json', 'w') as f:
         json.dump(json_obj, f)
 
     book.close()
@@ -53,4 +53,4 @@ def create_new_sheets(df: pd.DataFrame, book: openpyxl.Workbook):
         for r in range(2, 33):
             for c in ['C', 'D', 'E', 'F', 'G', 'H', 'J']:
                 sheet[f"{c}{r}"] = None
-    book.save('m2023.xlsx')
+    book.save('../../private/m2023.xlsx')

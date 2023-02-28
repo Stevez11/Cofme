@@ -12,7 +12,7 @@ def get_data(today=str(datetime.datetime.now().date()),
     assert type(max_hash_rate) and type(
         hash_rate_on_kas) == int, "Incorrect data type transmitted in max_hash_rate or hash_rate_on_kas"
 
-    with open('last_update.json') as f:
+    with open('../../private/last_update.json') as f:
         json_obj = json.load(f)
     assert json_obj[
                'month'] <= datetime.datetime.now().date().month, "current_month cannot be less than last moth update"
