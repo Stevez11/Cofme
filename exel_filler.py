@@ -11,6 +11,7 @@ def update_data(df: pd.DataFrame) -> None:
     book = openpyxl.load_workbook("../../private/m2023.xlsx")
 
     uniq_months = list(map(int, df['month'].unique()))
+    print(uniq_months)
     if len([i for i in uniq_months if i > len(book.sheetnames)]) != 0:
         create_new_sheets(df=df, book=book)
 
@@ -22,7 +23,7 @@ def update_data(df: pd.DataFrame) -> None:
                                                    df['KAS reward'],
                                                    df['consumption']):
 
-            if sheet[f"A{day + 1}"].value == date:
+            if pd.Timestamp(sheet[f"A{day + 1}"].value) == pd.Timestamp(date):
                 sheet[f"C{day + 1}"].value = ethw.replace('.', ',')
                 sheet[f"D{day + 1}"].value = zil.replace('.', ',')
                 sheet[f"E{day + 1}"].value = kas
@@ -51,6 +52,16 @@ def create_new_sheets(df: pd.DataFrame, book: openpyxl.Workbook):
         book.active.title = months[int(m)]
         sheet = book.active
         for r in range(2, 33):
+            date = datetime.datetime.strptime(f"{r - 1}.{m}.2023", "%d.%m.%Y")
+
+            if m in (1, 3, 5, 7, 8, 10, 12):
+                sheet[f"A{r}"].value = date.date()
+                sheet[f"A{r}"].number_format = "dd/mm/yyyy"
+            else:
+                if r < 32:
+                    sheet[f"A{r}"].value = date.date()
+                    sheet[f"A{r}"].number_format = "dd/mm/yyyy"
+
             for c in ['C', 'D', 'E', 'F', 'G', 'H', 'J']:
-                sheet[f"{c}{r}"] = None
+                sheet[f"{c}{r}"].value = None
     book.save('../../private/m2023.xlsx')
