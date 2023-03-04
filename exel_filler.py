@@ -2,7 +2,7 @@ import datetime
 import openpyxl
 import pandas as pd
 import json
-import archivator
+from cofme.project.mining_income_statistics import archivator
 
 
 def update_data(df: pd.DataFrame) -> None:
