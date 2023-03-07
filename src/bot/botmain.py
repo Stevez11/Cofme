@@ -52,8 +52,10 @@ class Form(StatesGroup):
 
 @dp.message_handler(commands='put')
 async def start(message: types.Message):
+    check_id(message)
     await message.answer("I expect the file in the next message")
     await Form.data.set()
+
 
 @dp.message_handler(content_types=['document'], state=Form.data)
 async def start(message: types.Message, state: FSMContext):
