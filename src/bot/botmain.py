@@ -24,26 +24,33 @@ COMMANDS_LIST = "Available command list:\n" \
 
 def check_id(message: types.Message):
     if message.chat.id not in users:
-        message.answer(text=r"Sorry, you don't have access")
+        return False
+    return True
 
 
 @dp.message_handler(commands=['help', 'start'])
 async def help(message: types.Message):
-    check_id(message)
-    await message.answer(text=COMMANDS_LIST)
+    if check_id(message):
+        await message.answer(text=COMMANDS_LIST)
+    else:
+        await message.answer(text=r"Sorry, you don't have access")
 
 
 @dp.message_handler(commands='update')
 async def update_data(message: types.Message):
-    check_id(message)
-    main.start()
-    await message.answer(text='data updated')
+    if check_id(message):
+        main.start()
+        await message.answer(text='data updated')
+    else:
+        await message.answer(text=r"Sorry, you don't have access")
 
 
 @dp.message_handler(commands='get')
 async def get_data(message: types.Message):
-    check_id(message)
-    await message.answer_document(open('../../private/m2023.xlsx', 'rb'))
+    if check_id(message):
+        await message.answer_document(open('../../private/m2023.xlsx', 'rb'))
+    else:
+        await message.answer(text=r"Sorry, you don't have access")
 
 
 class Form(StatesGroup):
@@ -52,9 +59,11 @@ class Form(StatesGroup):
 
 @dp.message_handler(commands='put')
 async def start(message: types.Message):
-    check_id(message)
-    await message.answer("I expect the file in the next message")
-    await Form.data.set()
+    if check_id(message):
+        await message.answer("I expect the file in the next message")
+        await Form.data.set()
+    else:
+        await message.answer(text=r"Sorry, you don't have access")
 
 
 @dp.message_handler(content_types=['document'], state=Form.data)
