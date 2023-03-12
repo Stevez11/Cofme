@@ -11,7 +11,6 @@ def update_data(df: pd.DataFrame) -> None:
     book = openpyxl.load_workbook("../../private/m2023.xlsx")
 
     uniq_months = list(map(int, df['month'].unique()))
-    print(uniq_months)
     if len([i for i in uniq_months if i > len(book.sheetnames)]) != 0:
         create_new_sheets(df=df, book=book)
 
