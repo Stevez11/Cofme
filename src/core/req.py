@@ -4,6 +4,15 @@ import datetime
 import json
 
 
+def get_kas_data(kas_hash_rate):
+    kas_req = requests.get(
+        f'https://whattomine.com/coins/352.json?hr={kas_hash_rate}&p=0.0&fee=2.0&cost=0.0&cost_currency=USD&hcost=0.0&span_br=&span_d=3')
+    data = kas_req.json()
+    kas_rewards = float(data['estimated_rewards'])
+    kas_rewards = round(kas_rewards, 2)
+    return kas_rewards
+
+
 def get_data(today=str(datetime.datetime.now().date()),
              ethash_hash_rate=None,
              kas_hash_rate=None,
@@ -17,12 +26,7 @@ def get_data(today=str(datetime.datetime.now().date()),
     assert json_obj[
                'month'] <= datetime.datetime.now().date().month, "current_month cannot be less than last moth update"
 
-    kas_req = requests.get(
-        f'https://whattomine.com/coins/352.json?hr={kas_hash_rate}&p=0.0&fee=2.0&cost=0.0&cost_currency=USD&hcost=0.0&span_br=&span_d=3')
-
-    for i in kas_req.text.split(','):
-        if '"estimated_rewards"' in i.split(':'):
-            kas_rewards = float(i.split(':')[1].replace('"', ''))
+    kas_rewards = get_kas_data(kas_hash_rate)
 
     req = requests.get(
         'https://billing.ezil.me/v2/accounts/0xab9a6d7f2340a6eb06cfa17bcc76d63a5b68e0e3.zil1sakzjjae30arff5aj5ekcpf793f622snjrayvv/revenue_report/mining_rewards/export?coin=ethw&sort_by=date&direction=desc&view_by=days')
@@ -44,4 +48,3 @@ def get_data(today=str(datetime.datetime.now().date()),
     df['consumption'] = round(df['Hashrate(MHs)'].astype(float) / ethash_hash_rate * consumption, 2)
     print(df)
     return df
-
